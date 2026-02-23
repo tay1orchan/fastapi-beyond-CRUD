@@ -33,7 +33,7 @@ jobs:
             username: apikey
             password: ${{ secrets.SENDGRID_API_KEY }}
             to: ${{ secrets.NOTIFY_EMAIL_TO }}
-            from: ${{ secrets.NOTIFY_EMAIL_FROM }}
+            from: taylorkayli123@gmail.com
             subject: "Failure: Conventional Commits Required"
             body: Failure to provide conventional commits. PR closed. ${{ github.event.pull_request.html_url }}
             
