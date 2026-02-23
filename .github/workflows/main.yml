@@ -1,0 +1,39 @@
+name: Conventional Commits on PR
+
+on: 
+  pull_request: 
+    types: [opened, synchronize]
+
+permissions: 
+  pull-requests: write
+  contents: read 
+
+jobs:
+  check-commits:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v4
+
+        - name: Check for Conventional Commits 
+          uses: webiny/action-conventional-commits@v3
+          
+        - name: Close PR on Failure 
+          if: failure()
+          run: gh pr close ${{ github.event.pull_request.number }}
+          env:
+              GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+        - name: Email on failure 
+          if: failure()
+          uses: dawidd6/action-send-mail@v3
+          with:
+            server_address: smtp.sendgrid.net
+            server_port: 587
+            username: apikey
+            password: secrets.SENDGRID_API_KEY
+            to: ${{ secrets.NOTIFY_EMAIL_TO }}
+            from: ${{ secrets.NOTIFY_EMAIL_FROM }}
+            subject: "Failure: Conventional Commits Required"
+            body: Failure to provide conventional commits. PR closed. ${{ github.event.pull_request.html_url }}
+            
+          
