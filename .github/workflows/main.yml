@@ -26,21 +26,28 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     
-      - name: Email on failure
+      - name: Email on failure (SendGrid API)
         if: steps.conventional.outcome == 'failure'
-        continue-on-error: true
-        uses: dawidd6/action-send-mail@v3
+        uses: sendgrid/action-sendgrid@v1
+        env:
+          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
         with:
-          server_address: smtp.sendgrid.net
-          server_port: 587
-          secure: false
-          username: apikey
-          password: ${{ secrets.SENDGRID_API_KEY }}
-          to: ${{ secrets.NOTIFY_EMAIL_TO }}
-          from: ${{ secrets.NOTIFY_EMAIL_FROM }}
-          reply_to: ${{ secrets.NOTIFY_EMAIL_FROM }}
-          subject: "Failure: Conventional Commits Required"
-          body: "Failure to provide conventional commits. PR closed. ${{ github.event.pull_request.html_url }}"
+          mail: |
+            {
+              "personalizations": [
+                {
+                  "to": [{"email": "${{ secrets.NOTIFY_EMAIL_TO }}"}],
+                  "subject": "Failure: Conventional Commits Required"
+                }
+              ],
+              "from": {"email": "taylorkayli123@gmail.com"},
+              "content": [
+                {
+                  "type": "text/plain",
+                  "value": "Failure to provide conventional commits. PR closed. ${{ github.event.pull_request.html_url }}"
+                }
+              ]
+            }
           
       - name: Debug FROM (safe)
         if: always()
