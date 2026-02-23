@@ -1,31 +1,30 @@
 name: Conventional Commits on PR
 
-on: 
-  pull_request: 
+on:
+  pull_request:
     types: [opened, synchronize]
 
-permissions: 
+permissions:
   pull-requests: write
-  contents: read 
+  contents: read
   issues: write
 
 jobs:
   check-commits:
-      runs-on: ubuntu-latest
-      steps:
+    runs-on: ubuntu-latest
+    steps:
       - uses: actions/checkout@v4
-    
+
       - name: Check for Conventional Commits
         id: conventional
         uses: webiny/action-conventional-commits@v1.3.1
         continue-on-error: true
-    
+
       - name: Close PR on Failure
         if: steps.conventional.outcome == 'failure'
-        run: 'gh pr close ${{ github.event.pull_request.number }} --comment "Closing: commits are not Conventional Commits compliant."'
+        run: gh pr close ${{ github.event.pull_request.number }} --comment "Closing: commits are not Conventional Commits compliant."
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    
 
       - name: Email on failure
         if: steps.conventional.outcome == 'failure'
