@@ -43,13 +43,13 @@ jobs:
           body: "Failure to provide conventional commits. PR closed. ${{ github.event.pull_request.html_url }}"
           
       - name: Debug FROM (safe)
-       if: always()
-       run: |
-           FROM="${{ secrets.NOTIFY_EMAIL_FROM }}"
-              echo "FROM length: ${#FROM}"
-              if [ "$FROM" = "taylorkayli123@gmail.com" ]; then
-                echo "FROM matches verified Gmail ✅"
-              else
-                echo "FROM does NOT match verified Gmail ❌"
-              fi
+        if: always()
+        run: |
+          FROM="${{ secrets.NOTIFY_EMAIL_FROM }}"
+            echo "FROM length: ${#FROM}"
+            if [ "$FROM" = "taylorkayli123@gmail.com" ]; then
+              echo "FROM matches verified Gmail ✅"
+            else
+              echo "FROM does NOT match verified Gmail ❌"
+            fi
                   
