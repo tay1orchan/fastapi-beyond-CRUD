@@ -7,36 +7,41 @@ on:
 permissions: 
   pull-requests: write
   contents: read 
+  issues: write
 
 jobs:
   check-commits:
       runs-on: ubuntu-latest
       steps:
-        - uses: actions/checkout@v4
-
-        - name: Check for Conventional Commits 
-          id: conventional 
-          uses: webiny/action-conventional-commits@v1.3.1
-          
-        - name: Close PR on Failure 
-          if: failure()
-          run: gh pr close ${{ github.event.pull_request.number }}
-          env:
-              GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-
-        - name: Email on failure 
-          if: steps.conventional.outcome == 'failure'
-          continue-on-error: true
-          uses: dawidd6/action-send-mail@v3
-          with:
-            server_address: smtp.sendgrid.net
-            server_port: 587
-            username: apikey
-            password: ${{ secrets.SENDGRID_API_KEY }}
-            to: ${{ secrets.NOTIFY_EMAIL_TO }}
-            from: taylorkayli123@gmail.com
-            subject: "Failure: Conventional Commits Required"
-            body: Failure to provide conventional commits. PR closed. ${{ github.event.pull_request.html_url }}
-            
-          
+      - uses: actions/checkout@v4
+    
+      - name: Check for Conventional Commits
+        id: conventional
+        uses: webiny/action-conventional-commits@v1.3.1
+        continue-on-error: true
+    
+      - name: Close PR on Failure
+        if: steps.conventional.outcome == 'failure'
+        run: 'gh pr close ${{ github.event.pull_request.number }} --comment "Closing: commits are not Conventional Commits compliant."'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
+      - name: Email on failure
+        if: steps.conventional.outcome == 'failure'
+        continue-on-error: true
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.sendgrid.net
+          server_port: 587
+          secure: false
+          username: apikey
+          password: ${{ secrets.SENDGRID_API_KEY }}
+          to: ${{ secrets.NOTIFY_EMAIL_TO }}
+          from: taylorkayli123@gmail.com
+          reply_to: taylorkayli123@gmail.com
+          subject: "Failure: Conventional Commits Required"
+          body: "Failure to provide conventional commits. PR closed. ${{ github.event.pull_request.html_url }}"
+    
+      - name: Fail job if commits are invalid
+        if: steps.conventional.outcome == 'failure'
+        run: exit 1
