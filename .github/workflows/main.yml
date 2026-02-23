@@ -14,7 +14,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
+        with:
+          fetch-depth: 0
+          
       - name: Check for Conventional Commits
         id: conventional
         uses: webiny/action-conventional-commits@v1.3.1
