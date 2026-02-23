@@ -12,6 +12,17 @@ permissions:
 jobs:
   nightly:
     runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: "sqlite+aiosqlite:///./test.db"
+      JWT_SECRET: "nightly-secret"
+      JWT_ALGORITHM: "HS256"
+      MAIL_USERNAME: "dummy"
+      MAIL_PASSWORD: "dummy"
+      MAIL_FROM: "dummy@example.com"
+      MAIL_PORT: "587"
+      MAIL_SERVER: "smtp.example.com"
+      MAIL_FROM_NAME: "Nightly CI"
+      DOMAIN: "localhost"
 
     steps:
       - name: Checkout main
