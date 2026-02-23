@@ -41,8 +41,15 @@ jobs:
           reply_to: taylorkayli123@gmail.com
           subject: "Failure: Conventional Commits Required"
           body: "Failure to provide conventional commits. PR closed. ${{ github.event.pull_request.html_url }}"
-
-      - name: Debug email fields
-        if: steps.conventional.outcome == 'failure'
-        run: echo "FROM=${{ secrets.NOTIFY_EMAIL_FROM }}"
-        
+          
+      - name: Debug FROM (safe)
+       if: always()
+       run: |
+           FROM="${{ secrets.NOTIFY_EMAIL_FROM }}"
+              echo "FROM length: ${#FROM}"
+              if [ "$FROM" = "taylorkayli123@gmail.com" ]; then
+                echo "FROM matches verified Gmail ✅"
+              else
+                echo "FROM does NOT match verified Gmail ❌"
+              fi
+                  
