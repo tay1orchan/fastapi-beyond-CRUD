@@ -15,6 +15,7 @@ jobs:
         - uses: actions/checkout@v4
 
         - name: Check for Conventional Commits 
+          id: conventional 
           uses: webiny/action-conventional-commits@v1.3.1
           
         - name: Close PR on Failure 
@@ -25,7 +26,8 @@ jobs:
 
 
         - name: Email on failure 
-          if: failure()
+          if: steps.conventional.outcome == 'failure'
+          continue-on-error: true
           uses: dawidd6/action-send-mail@v3
           with:
             server_address: smtp.sendgrid.net
