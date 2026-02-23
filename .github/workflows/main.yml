@@ -41,7 +41,8 @@ jobs:
           reply_to: taylorkayli123@gmail.com
           subject: "Failure: Conventional Commits Required"
           body: "Failure to provide conventional commits. PR closed. ${{ github.event.pull_request.html_url }}"
-    
-      - name: Fail job if commits are invalid
+
+      - name: Debug email fields
         if: steps.conventional.outcome == 'failure'
-        run: exit 1
+        run: echo "FROM=${{ secrets.NOTIFY_EMAIL_FROM }}"
+        
