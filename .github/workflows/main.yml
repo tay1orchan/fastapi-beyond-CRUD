@@ -20,7 +20,6 @@ jobs:
       - name: Check for Conventional Commits
         id: conventional
         uses: webiny/action-conventional-commits@v1.3.1
-        continue-on-error: true
 
       - name: Close PR on Failure
         if: steps.conventional.outcome == 'failure'
