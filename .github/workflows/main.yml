@@ -33,13 +33,17 @@ jobs:
         continue-on-error: true
         uses: dawidd6/action-send-mail@v3
         with:
-          server_address: smtp.sendgrid.net
-          server_port: 587
+          server_address: ${{ secrets.SMTP_SERVER }}
+          server_port: ${{ secrets.SMTP_PORT }}
           secure: false
-          username: apikey
-          password: ${{ secrets.SENDGRID_API_KEY }}
+          username: ${{ secrets.SMTP_USERNAME }}
+          password: ${{ secrets.SMTP_PASSWORD }}
           to: ${{ secrets.NOTIFY_EMAIL_TO }}
           from: ${{ secrets.NOTIFY_EMAIL_FROM }}
-          reply_to: ${{ secrets.NOTIFY_EMAIL_FROM }}
           subject: "Failure: Conventional Commits Required"
-          body: "Failure to provide conventional commits. PR closed. ${{ github.event.pull_request.html_url }}"
+          body: |
+            Conventional Commits check failed.
+            PR was closed: ${{ github.event.pull_request.html_url }}
+            Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+               
+            
