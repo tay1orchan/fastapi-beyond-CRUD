@@ -22,7 +22,7 @@ jobs:
 
       - name: Close PR on Failure
         if: steps.conventional.outcome == 'failure'
-        run: gh pr close ${{ github.event.pull_request.number }} --comment "Closing: commits are not Conventional Commits compliant."
+        run: 'gh pr close ${{ github.event.pull_request.number }} --comment "Closing: commits are not Conventional Commits compliant."'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
